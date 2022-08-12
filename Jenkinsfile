@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker push mohitdocker15/aesthisia'
+            image 'docker push mohitdocker15/aesthisia:Mohitimg'
             args '-p 3000:3000'
         }
     }

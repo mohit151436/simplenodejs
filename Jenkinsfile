@@ -1,8 +1,14 @@
 pipeline {
-  agent any
-  tools {nodejs "node"}
-  stages {
-    stage('Build') {
-      steps {
-        sh 'docker-compose -f docker-compose.yaml up -d'
-      }}}}
+    agent {
+        docker {
+            image 'node:lts-bullseye-slim' 
+            args '-p 3000:3000' 
+        }
+    }
+    stages {
+        stage('Build') { 
+            steps {
+                sh 'npm install' 
+            }
+        }
+    }

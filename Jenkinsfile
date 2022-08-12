@@ -1,23 +1,30 @@
 pipeline {
-  agent any
-
-  tools {nodejs "node"}
-
-  stages {
-    stage('Cloning Git') {
-      steps {
-        git 'https://github.com/mohit151436/simplenodejs.git'
-      }
+    agent {
+        docker {
+            image 'node:6-alpine'
+            args '-p 3000:3001'
+        }
     }
-    stage('Install dependencies') {
-      steps {
-        sh 'npm i -save express'
-      }
+    environment {
+        CI = 'true'
     }
-    stage('Test') {
-      steps {
-         sh 'node server.js'
-      }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh './jenkins/scripts/test.sh'
+            }
+        }
+        stage('Deliver') {
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                sh './jenkins/scripts/kill.sh'
+            }
+        }
     }
-  }
 }
